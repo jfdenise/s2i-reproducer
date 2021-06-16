@@ -1,0 +1,18 @@
+apiVersion: shipwright.io/v1alpha1
+kind: Build
+metadata:
+  name: wildfly-s2i-build
+spec:
+  source:
+    url: https://github.com/jfdenise/wildfly-s2i
+    contextDir: test/test-app
+    revision: wildfly-s2i-v2
+  strategy:
+    name: source-to-image-jboss
+    kind: ClusterBuildStrategy
+  builder:
+    image: quay.io/jfdenise/wildfly-s2i-v2:latest
+  output:
+    image: quay.io/jfdenise/sample-test-app-v2:latest
+    credentials:
+      name: push-secret
