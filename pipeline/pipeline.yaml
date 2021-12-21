@@ -1,0 +1,63 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: pipeline-build-push-image
+spec:
+  params:
+    - name: gitUrl
+    - name: revision
+    - name: contextDir
+    - name: outputImage
+  workspaces:
+    - name: shared-data
+    - name: push-secret
+  tasks:
+    - name: my-clone-repo
+      taskRef:
+        name: my-git-clone
+      workspaces:
+        - name: output
+          workspace: shared-data
+      params:
+        - name: url
+          value: "$(params.gitUrl)"
+        - name: revision
+          value: "$(params.revision)"
+        - name: deleteExisting
+          value: "true"
+        - name: depth
+          value: "1"
+    - name: build-wildfly
+      taskRef:
+        name: build-wildfly
+      params:
+        - name: contextDir
+          value: "$(params.contextDir)"
+      runAfter: 
+        - my-clone-repo
+      workspaces:
+        - name: sources
+          workspace: shared-data
+    - name: echo-content
+      taskRef:
+        name: echo-task
+      runAfter: 
+        - build-wildfly
+      workspaces:
+        - name: sources
+          workspace: shared-data
+    - name: build-wildfly-image
+      taskRef:
+        name: kaniko
+      params:
+        - name: IMAGE
+          value: "$(params.outputImage)"
+        - name: DOCKERFILE
+          value: "docker-build/Dockerfile"
+      runAfter: 
+        - echo-content
+      workspaces:
+        - name: source
+          workspace: shared-data
+        - name: dockerconfig
+          workspace: push-secret

@@ -1,0 +1,17 @@
+WildFly s2i V2 pipeline
+
+Install tekton:
+kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.30.0/release.yaml
+
+Secret needed by kaniko: 
+../kubectl create secret generic kaniko-push-secret --from-file=/home/jdenise/.docker/config.json
+
+Tasks that you need to add:
+- git-clone. Can we replace it with an git resource?
+- kaniko
+
+TODO:
+revisit the build-task to use assemble to benefit from all capabilities
+* So must mount the src by setting env var to retrieve the mounted src,
+
+

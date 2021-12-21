@@ -1,0 +1,28 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  generateName: pipelinerun-build-push-image
+spec:
+  workspaces:
+  - name: shared-data
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteMany
+        resources:
+          requests:
+            storage: 1Gi
+  - name: push-secret
+    secret:
+      secretName: kaniko-push-secret
+  pipelineRef:
+    name: pipeline-build-push-image
+  params:
+    - name: gitUrl
+      value: "http://github.com/wildfly/wildfly-s2i"
+    - name: revision
+      value: "v2"
+    - name: contextDir
+      value: "test/test-app"
+    - name: outputImage
+      value: "quay.io/jfdenise/sample-test-app-v2:latest"

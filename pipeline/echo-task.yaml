@@ -1,0 +1,19 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: echo-task
+spec:
+  workspaces:
+    - name: sources
+      description: The src dir
+  steps:
+    - name: echo-path
+      workingDir: $(workspaces.sources.path)
+      securityContext:
+        runAsUser: 0
+      image: "quay.io/jfdenise/wildfly-s2i-jdk11:latest"
+      script: |
+        #!/usr/bin/env sh
+        set -eu
+        ls -l ./docker-build
+        cat ./docker-build/Dockerfile

@@ -1,0 +1,39 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: build-wildfly
+spec:
+  params:
+   - name: contextDir
+     type: string
+  workspaces:
+    - name: sources
+      description: The src dir
+  steps:
+    - name: build-application
+      securityContext:
+        runAsUser: 0
+      image: "quay.io/jfdenise/wildfly-s2i-jdk11:latest"
+      env:
+        - name: WORKSPACE_SRC_PATH
+          value: $(workspaces.sources.path)
+        - name: WORKSPACE_SRC_CONTEXT_DIR
+          value: $(params.contextDir)
+      script: |
+        #!/usr/bin/env sh
+        set -eu
+        cd "$WORKSPACE_SRC_PATH"
+        if [ ! -z "$WORKSPACE_SRC_CONTEXT_DIR" ]; then
+          cd "$WORKSPACE_SRC_CONTEXT_DIR"
+        fi
+        
+        mvn clean package -Popenshift
+        mkdir -p "$WORKSPACE_SRC_PATH"/docker-build
+        mv target/server "$WORKSPACE_SRC_PATH"/docker-build
+         cat <<EOF > "$WORKSPACE_SRC_PATH"/docker-build/Dockerfile
+        FROM quay.io/jfdenise/wildfly-runtime-jdk11:latest
+        COPY docker-build/server \$JBOSS_HOME
+        USER root
+        RUN chown -R jboss:root \$JBOSS_HOME && chmod -R ug+rwX \$JBOSS_HOME
+        USER jboss
+        EOF
