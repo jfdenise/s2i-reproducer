@@ -6,8 +6,20 @@ spec:
   params:
     - name: gitUrl
     - name: revision
+      default: ""
     - name: contextDir
+      default: ""
     - name: outputImage
+    - name: MAVEN_ARGS_APPEND
+      default: ""
+    - name: MAVEN_OPTS
+      default: ""
+    - name: ARTIFACT_DIR
+      default: ""
+    - name: GALLEON_PROVISION_LAYERS
+      default: ""
+    - name: GALLEON_PROVISION_FEATURE_PACKS
+      default: ""
   workspaces:
     - name: shared-data
     - name: push-secret
@@ -33,6 +45,16 @@ spec:
       params:
         - name: contextDir
           value: "$(params.contextDir)"
+        - name: MAVEN_ARGS_APPEND
+          value: "$(params.MAVEN_ARGS_APPEND)"
+        - name: MAVEN_OPTS
+          value: "$(params.MAVEN_OPTS)"
+        - name: _ARTIFACT_DIR
+          value: "$(params.ARTIFACT_DIR)"
+        - name: GALLEON_PROVISION_LAYERS
+          value: "$(params.GALLEON_PROVISION_LAYERS)"
+        - name: GALLEON_PROVISION_FEATURE_PACKS
+          value: "$(params.GALLEON_PROVISION_FEATURE_PACKS)"
       runAfter: 
         - git-clone-repo
       workspaces:

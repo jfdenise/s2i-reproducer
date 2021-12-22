@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: wildfly-s2i-build-pipeline-run
+  generateName: test-app
 spec:
   workspaces:
   - name: shared-data

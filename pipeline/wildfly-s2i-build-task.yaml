@@ -6,6 +6,22 @@ spec:
   params:
    - name: contextDir
      type: string
+     default: ""
+   - name: MAVEN_OPTS
+     type: string
+     default: ""
+   - name: MAVEN_ARGS_APPEND
+     type: string
+     default: ""
+   - name: _ARTIFACT_DIR
+     type: string
+     default: ""
+   - name: GALLEON_PROVISION_LAYERS
+     type: string
+     default: ""
+   - name: GALLEON_PROVISION_FEATURE_PACKS
+     type: string
+     default: ""
   workspaces:
     - name: sources
       description: The src dir
@@ -25,6 +41,16 @@ spec:
           value: $(workspaces.sources.path)
         - name: WORKSPACE_SRC_CONTEXT_DIR
           value: $(params.contextDir)
+        - name: MAVEN_ARGS_APPEND
+          value: $(params.MAVEN_ARGS_APPEND)
+        - name: MAVEN_OPTS
+          value: $(params.MAVEN_OPTS)
+        - name: _ARTIFACT_DIR
+          value: $(params._ARTIFACT_DIR)
+        - name: GALLEON_PROVISION_LAYERS
+          value: $(params.GALLEON_PROVISION_LAYERS)
+        - name: GALLEON_PROVISION_FEATURE_PACKS
+          value: $(params.GALLEON_PROVISION_FEATURE_PACKS)
       script: |
         #!/usr/bin/env sh
         set -eu
@@ -39,6 +65,11 @@ spec:
         mkdir -p "$s2iSourceDir"
         mv "$srcDir"/* "$s2iSourceDir"
         export S2I_DESTINATION_DIR="$s2iDestinationDir"
+        
+        if [ ! -z "$_ARTIFACT_DIR" ]; then
+          export ARTIFACT_DIR="$_ARTIFACT_DIR"
+        fi
+        
         /usr/local/s2i/assemble
         
         # Generate Dockerfile file and create docker build context
