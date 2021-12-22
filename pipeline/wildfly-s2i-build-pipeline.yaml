@@ -1,7 +1,7 @@
 apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
-  name: pipeline-build-push-image
+  name: wildfly-s2i-build-pipeline
 spec:
   params:
     - name: gitUrl
@@ -12,9 +12,9 @@ spec:
     - name: shared-data
     - name: push-secret
   tasks:
-    - name: my-clone-repo
+    - name: git-clone-repo
       taskRef:
-        name: my-git-clone
+        name: git-clone
       workspaces:
         - name: output
           workspace: shared-data
@@ -27,42 +27,29 @@ spec:
           value: "true"
         - name: depth
           value: "1"
-    - name: build-wildfly
+    - name: wildfly-s2i-build
       taskRef:
-        name: build-wildfly
+        name: wildfly-s2i-build-task
       params:
         - name: contextDir
           value: "$(params.contextDir)"
       runAfter: 
-        - my-clone-repo
+        - git-clone-repo
       workspaces:
         - name: sources
           workspace: shared-data
-    - name: echo-content
-      taskRef:
-        name: echo-task
-      params:
-        - name: DOCKERFILE
-          value: "$(tasks.build-wildfly.results.dockerFile)"
-        - name: CONTEXT
-          value: "$(tasks.build-wildfly.results.dockerBuildContext)"
-      runAfter: 
-        - build-wildfly
-      workspaces:
-        - name: sources
-          workspace: shared-data
-    - name: build-wildfly-image
+    - name: kaniko-build-push
       taskRef:
         name: kaniko
       params:
         - name: IMAGE
           value: "$(params.outputImage)"
         - name: DOCKERFILE
-          value: "$(tasks.build-wildfly.results.dockerFile)"
+          value: "$(tasks.wildfly-s2i-build.results.dockerFile)"
         - name: CONTEXT
-          value: "$(tasks.build-wildfly.results.dockerBuildContext)"
+          value: "$(tasks.wildfly-s2i-build.results.dockerBuildContext)"
       runAfter: 
-        - echo-content
+        - wildfly-s2i-build
       workspaces:
         - name: source
           workspace: shared-data

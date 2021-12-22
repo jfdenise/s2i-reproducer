@@ -1,14 +1,14 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: pipelinerun-build-push-image
+  generateName: wildfly-s2i-build-pipeline-run
 spec:
   workspaces:
   - name: shared-data
     volumeClaimTemplate:
       spec:
         accessModes:
-        - ReadWriteMany
+        - ReadWriteOnce
         resources:
           requests:
             storage: 1Gi
@@ -16,7 +16,7 @@ spec:
     secret:
       secretName: kaniko-push-secret
   pipelineRef:
-    name: pipeline-build-push-image
+    name: wildfly-s2i-build-pipeline
   params:
     - name: gitUrl
       value: "http://github.com/wildfly/wildfly-s2i"
