@@ -23,6 +23,7 @@ spec:
   workspaces:
     - name: shared-data
     - name: push-secret
+    - name: maven-cache
   tasks:
     - name: git-clone-repo
       taskRef:
@@ -60,6 +61,8 @@ spec:
       workspaces:
         - name: sources
           workspace: shared-data
+        - name: maven-cache
+          workspace: maven-cache
     - name: kaniko-build-push
       taskRef:
         name: kaniko

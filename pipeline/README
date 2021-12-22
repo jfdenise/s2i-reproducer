@@ -18,12 +18,14 @@ WildFly pipeline
 kubectl create --filename wildfly-s2i-build-task.yaml
 kubectl create --filename wildfly-s2i-build-pipeline.yaml
 
+Create PVC
+kubectl create --filename  pvc-sources-maven.yaml
+
 Examples:
 * V2 build: kubectl create --filename examples/test-app-build.yaml
 * V2 build with legacy quickstart: kubectl create --filename examples/qs-rest-client-server-build.yaml
  
 TODO:
-Create a shared volume for maven repo?
 Create a Deployment?
 Merge task and pipeline in the same yaml file?
 

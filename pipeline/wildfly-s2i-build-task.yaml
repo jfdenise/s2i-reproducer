@@ -25,6 +25,8 @@ spec:
   workspaces:
     - name: sources
       description: The src dir
+    - name: maven-cache
+      description: The maven repo cache
   results:
     - name: dockerFile
       description: The generated docker file path.
@@ -45,6 +47,8 @@ spec:
           value: $(params.MAVEN_ARGS_APPEND)
         - name: MAVEN_OPTS
           value: $(params.MAVEN_OPTS)
+        - name: MAVEN_LOCAL_REPO
+          value: $(workspaces.maven-cache.path)
         - name: _ARTIFACT_DIR
           value: $(params._ARTIFACT_DIR)
         - name: GALLEON_PROVISION_LAYERS

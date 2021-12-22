@@ -5,13 +5,13 @@ metadata:
 spec:
   workspaces:
   - name: shared-data
-    volumeClaimTemplate:
-      spec:
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
+    subPath: sources
+    persistentVolumeClaim:
+      claimName: maven-cache
+  - name: maven-cache
+    subPath: maven-repo-cache
+    persistentVolumeClaim:
+      claimName: maven-cache
   - name: push-secret
     secret:
       secretName: kaniko-push-secret
