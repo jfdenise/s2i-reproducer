@@ -41,6 +41,11 @@ spec:
     - name: echo-content
       taskRef:
         name: echo-task
+      params:
+        - name: DOCKERFILE
+          value: "$(tasks.build-wildfly.results.dockerFile)"
+        - name: CONTEXT
+          value: "$(tasks.build-wildfly.results.dockerBuildContext)"
       runAfter: 
         - build-wildfly
       workspaces:
@@ -53,7 +58,9 @@ spec:
         - name: IMAGE
           value: "$(params.outputImage)"
         - name: DOCKERFILE
-          value: "docker-build/Dockerfile"
+          value: "$(tasks.build-wildfly.results.dockerFile)"
+        - name: CONTEXT
+          value: "$(tasks.build-wildfly.results.dockerBuildContext)"
       runAfter: 
         - echo-content
       workspaces:

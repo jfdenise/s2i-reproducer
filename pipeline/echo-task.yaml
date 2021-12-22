@@ -3,11 +3,21 @@ kind: Task
 metadata:
   name: echo-task
 spec:
+  params:
+  - name: DOCKERFILE
+    description: Path to the Dockerfile to build.
+  - name: CONTEXT
   workspaces:
     - name: sources
       description: The src dir
   steps:
     - name: echo-path
+      env:
+      - name: MYDOCKERFILE
+        value: "$(params.DOCKERFILE)"
+      - name: MYCONTEXT
+        value: "$(params.CONTEXT)"
+        
       workingDir: $(workspaces.sources.path)
       securityContext:
         runAsUser: 0
@@ -15,5 +25,5 @@ spec:
       script: |
         #!/usr/bin/env sh
         set -eu
-        ls -l ./docker-build
-        cat ./docker-build/Dockerfile
+        ls -l "$MYCONTEXT"
+        cat "$MYDOCKERFILE"

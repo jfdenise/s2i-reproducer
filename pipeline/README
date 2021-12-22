@@ -6,7 +6,9 @@ or
 
 Install tekton:
 kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.30.0/release.yaml
-
+Install needed tasks:
+kubectl apply --filename https://raw.githubusercontent.com/tektoncd/catalog/main/task/git-clone/0.5/git-clone.yaml
+kubectl apply --filename https://raw.githubusercontent.com/tektoncd/catalog/main/task/kaniko/0.5/kaniko.yaml
 Secret needed by kaniko: 
 ../kubectl create secret generic kaniko-push-secret --from-file=/home/jdenise/.docker/config.json
 
@@ -17,6 +19,6 @@ Tasks that you need to add:
 TODO:
 [DONE] revisit the build-task to use assemble to benefit from all capabilities
 Can we provide env variables to the pipeline???? Needed to configure the build (eg: settings, mirror, MAVEN_ARGS_APPEND...)
-* Local maven cache, can we mount from local directory? Allows for SNAPSHOT build.
-
+* Local maven cache, can we mount from local directory? Allows for SNAPSHOT build. Bad idea to pollute local cache.
+* Create 
 
