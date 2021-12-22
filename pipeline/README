@@ -1,5 +1,9 @@
 WildFly s2i V2 pipeline
 
+./minikube start
+or
+./minikube start --mount --mount-string="/home/jdenise/.m2/repository/:/maven-local-repository"
+
 Install tekton:
 kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/previous/v0.30.0/release.yaml
 
@@ -11,7 +15,8 @@ Tasks that you need to add:
 - kaniko
 
 TODO:
-revisit the build-task to use assemble to benefit from all capabilities
-* So must mount the src by setting env var to retrieve the mounted src,
+[DONE] revisit the build-task to use assemble to benefit from all capabilities
+Can we provide env variables to the pipeline???? Needed to configure the build (eg: settings, mirror, MAVEN_ARGS_APPEND...)
+* Local maven cache, can we mount from local directory? Allows for SNAPSHOT build.
 
 
