@@ -1,5 +1,9 @@
 FROM quay.io/jfdenise/wildfly-s2i-jdk11:latest AS build
+USER root
+
 COPY . /tmp/src/
+RUN chown -R jboss:root /tmp/src/ && chmod -R ug+rwX /tmp/src/
+USER jboss
 RUN ls /tmp/src
 ARG MAVEN_LOCAL_REPO
 ARG MAVEN_ARGS_APPEND
