@@ -1,13 +1,9 @@
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
-  generateName: test-app
+  generateName: test-app-kaniko-only
 spec:
   workspaces:
-  - name: shared-data
-    subPath: sources
-    persistentVolumeClaim:
-      claimName: maven-cache
   - name: maven-cache
     subPath: maven-repo-cache
     persistentVolumeClaim:
@@ -16,13 +12,11 @@ spec:
     secret:
       secretName: kaniko-push-secret
   pipelineRef:
-    name: wildfly-s2i-build-pipeline
+    name: wildfly-s2i-build-pipeline2
   params:
     - name: gitUrl
-      value: "http://github.com/wildfly/wildfly-s2i"
-    - name: revision
-      value: "v2"
+      value: git://github.com/jfdenise/s2i-reproducer#refs/heads/crazy
     - name: contextDir
-      value: "test/test-app"
+      value: "kaniko-docker"
     - name: outputImage
       value: "quay.io/jfdenise/sample-test-app-v2:latest"

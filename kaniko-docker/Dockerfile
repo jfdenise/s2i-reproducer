@@ -3,9 +3,6 @@ USER root
 COPY . /tmp/src/
 RUN chown -R jboss:root /tmp/src/ && chmod -R ug+rwX /tmp/src/
 USER jboss
-ARG MAVEN_LOCAL_REPO
-RUN echo "CHECKING content of maven repo"
-RUN ls -l $MAVEN_LOCAL_REPO
 
 RUN /usr/local/s2i/assemble
 
