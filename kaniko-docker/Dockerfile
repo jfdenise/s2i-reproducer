@@ -1,6 +1,13 @@
 FROM quay.io/jfdenise/wildfly-s2i-jdk11:latest AS build
 USER root
+RUN echo "[JFDENISE]/tmp content"
+RUN ls -l /tmp
+RUN echo "[JFDENISE] . content"
+RUN ls -l .
+RUN echo "[JFDENISE] Then copy all"
 COPY . /tmp/src/
+RUN echo "[JFDENISE]After copy tmp content"
+RUN ls /tmp
 RUN chown -R jboss:root /tmp/src/ && chmod -R ug+rwX /tmp/src/
 USER jboss
 
